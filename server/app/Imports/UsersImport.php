@@ -22,17 +22,29 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Events\AfterImport;
 use Maatwebsite\Excel\Validators\Failure;
 use Throwable;
+use  Illuminate\Support\Facades\Log;
+use App\File;
 
 class UsersImport implements
     ToCollection,
     WithValidation,
     WithHeadingRow,
     SkipsOnFailure,
-    SkipsOnError
+    SkipsOnError,
+    WithChunkReading,
+    ShouldQueue,
+    WithEvents
 {
-    use Importable, SkipsFailures,SkipsErrors;
+    use Importable, SkipsFailures,
+    SkipsErrors, RegistersEventListeners;
 
-    public $countError ;
+    public $countError;
+    public $uploadFile;
+
+    public function __construct($uploadFile)
+    {
+          $this->uploadFile = $uploadFile;
+    }
 
     public function collection(Collection $rows)
     {
@@ -50,6 +62,7 @@ class UsersImport implements
             }
         }
 
+        file::whereId($this->uploadFile->id)->first()->update(['num_neglected' => $this->countError]);
     }
 
     public function rules(): array
@@ -59,6 +72,17 @@ class UsersImport implements
         ];
     }
 
+    public function chunkSize(): int
+        {
+            return 1000;
+        }
+
+    public static function afterImport(AfterImport $event)
+    {
+        Log::info('This is some useful information. ddd44445555');
+        // Log::info($this->countError);
+
+    }
 
 
 }
