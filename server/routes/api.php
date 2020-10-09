@@ -19,3 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('users/import', 'API\UsersImportAPIController@storeUser')->name('import');
+Route::get('users', 'API\UsersImportAPIController@index')->name('users');

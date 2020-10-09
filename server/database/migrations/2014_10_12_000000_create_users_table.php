@@ -18,9 +18,8 @@ class CreateUsersTable extends Migration
             $table->string('first_name')->nullable();
             $table->string('second_name')->nullable();
             $table->string('family_name')->nullable();
-            $table->bigInteger('uid')->unique();
-            
-            $table->timestamps();
+            $table->string('uuid')->unique();
+
         });
     }
 

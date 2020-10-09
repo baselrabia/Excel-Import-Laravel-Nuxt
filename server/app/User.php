@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
+
+    protected $table = 'uuid';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -15,7 +18,9 @@ class User extends Model
         'first_name',
         'second_name',
         'family_name',
-        'uid',
+        'uuid',
     ];
+
+    public $timestamps = false;
 
 }

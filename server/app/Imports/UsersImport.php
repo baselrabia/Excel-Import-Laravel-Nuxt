@@ -55,20 +55,24 @@ class UsersImport implements
                     'first_name' => $row['first_name'],
                     'second_name' => $row['second_name'],
                     'family_name' => $row['family_name'],
-                    'uid' => $row['uid'],
+                    'uuid' => $row['uid'],
                 ]);
             } catch (\Illuminate\Database\QueryException $e) {
                 $this->countError++ ;
             }
         }
-
-        file::whereId($this->uploadFile->id)->first()->update(['num_neglected' => $this->countError]);
+        if($this->countError != null){
+            $file = file::whereId($this->uploadFile->id)->first();
+            $file->update(['num_neglected' => $file->num_neglected + $this->countError ]);
+            $total = user::count();
+            Log::info("total " . $total ." /count " . $this->countError . " /uplode num neglected " . $file->num_neglected);
+        }
     }
 
     public function rules(): array
     {
         return [
-            '*.uid' => ['unique:users,uid']
+            '*.uuid' => ['unique:uuid,uuid']
         ];
     }
 
